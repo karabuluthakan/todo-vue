@@ -120,7 +120,6 @@
           }else if(this.filter=='completed'){
             return this.todos.filter(todo=>todo.completed)
           }
-
           return this.todos
         },
         showClearCompletedButton(){
