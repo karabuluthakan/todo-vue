@@ -16,8 +16,12 @@
              @keyup.esc = "cancelEdit"
              v-focus="">
     </div>
-    <div class="remove-item"
-         @click="removeTodo(index)">&times;</div>
+    <div>
+      <button @click="pluralize">Çoğul</button>
+      <div class="remove-item"
+           @click="removeTodo(index)">&times;
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,6 +51,12 @@
           'beforeEditCache': '',
         }
       },
+      created(){
+        eventBus.$on('pluralize',this.hanlePluralize)
+      },
+      beforeDestroy(){
+        eventBus.$off('pluralize',this.hanlePluralize)
+      },
       watch:{
         checkAll(){
           // if (this.checkAll){
@@ -66,7 +76,7 @@
       },
       methods:{
         removeTodo(index){
-          this.$emit('removedTodo',index);
+          eventBus.$emit('removedTodo',index);
         },
         editTodo(){
           this.beforeEditCache = this.title
@@ -77,7 +87,7 @@
             this.title= this.beforeEditCache
           }
           this.editing=false
-          this.$emit('finishedEdit',{
+          eventBus.$emit('finishedEdit',{
             'index': this.index,
             'todo':{
               'id':this.id,
@@ -91,6 +101,21 @@
           this.title = this.beforeEditCache
           this.editing=false
         },
+        pluralize(){
+          eventBus.$emit('pluralize')
+        },
+        hanlePluralize(){
+          this.title = this.title +'lar'
+          eventBus.$emit('finishedEdit',{
+            'index':this.index,
+            'todo':{
+              'id': this.id,
+              'title':this.title,
+              'completed':this.completed,
+              'editing':this.editing,
+            }
+          })
+        }
       },
     }
 </script>
